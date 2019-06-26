@@ -3,7 +3,7 @@ const lexico = require('./app/lexico.js');
 const syntactic = require('./app/syntactic.js');
 const dictionary = [
     {type: "int", patten: ["^([0-9]){1,20}$"]},
-    {type: "operator", patten: ["^([+-]){1,1}$"]},
+    {type: "math-operator", patten: ["^([+-]){1,1}$"]},
     {
         type: "operator-attribution", 
         patten: ["^([=]){1,1}$"],
