@@ -13,8 +13,8 @@ const dictionary = [
     {type: "operator-if", patten: ["^if$"]},
     {type: "scope_open", patten: ["^{$"]},
     {type: "scope_close", patten: ["^}$"]},
-    {type: "parameters_open", patten: ["^[(]$"]},
-    {type: "parameters_close", patten: ["^[)]$"]},
+    {type: "bracket_open", patten: ["^[(]$"]},
+    {type: "bracket_close", patten: ["^[)]$"]},
 ];
 readFile()
 .then(teste => {
