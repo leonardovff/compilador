@@ -1,5 +1,5 @@
 const readFile = require('./app/file.js');
-const lexico = require('./app/lexico.js/index.js');
+const lexico = require('./app/lexico.js');
 const dictionary = [
     {type: "int", patten: ["^([0-9]){1,20}$"]},
     {type: "variable", patten: ["^([a-z]){1,20}$"]},
