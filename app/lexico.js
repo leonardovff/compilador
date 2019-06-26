@@ -1,13 +1,21 @@
 const lexico = (code, dictionary) => {
-    code = code.replace(/[ \s]/gi, '')+'e';
     let str = '',
     tokens = [],
-    temp = null;
+    temp = null,
+    hash = {};
+
+    code = code.replace(/[ \s]/gi, '')+'e';
     for(let i = 0; i < code.length; i++){
         str += code[i];
-        const filtered = dictionary.filter( word => 
-            new RegExp(`${word.patten}`, "gi").test(str)
-        );
+        const filtered = dictionary.filter( word => {
+            if(!new RegExp(`${word.patten}`, "gi").test(str)){
+                return false;
+            }
+            if(word.check){
+                return word.check(str);
+            }
+            return true;
+        });
         if(temp){
             temp = temp.filter(word => {
                 if(word.check){
@@ -18,7 +26,6 @@ const lexico = (code, dictionary) => {
             temp = temp.length == 0 ? null : temp;
         }
 
-        console.log(filtered, str, i, code.length);
         if(filtered.length == 1 && !temp){
             temp = filtered;
             continue;
@@ -33,6 +40,15 @@ const lexico = (code, dictionary) => {
                 (temp || i == code.length-1)
             )
         ){
+            if(temp[0].type == "variable"){
+                let id = hash[str.substr(0, str.length-1)];
+                if(!id){
+                    hash[str.substr(0, str.length-1)] = {
+                        value: null,
+                        type: undefined
+                    }
+                }
+            }
             tokens.push({
                 type: temp[0].type,
                 token: str.substr(0, str.length-1)
@@ -43,6 +59,6 @@ const lexico = (code, dictionary) => {
             temp = null;
         }
     }
-    return tokens;
+    return {tokens, hash};
 }
 module.exports = lexico;
