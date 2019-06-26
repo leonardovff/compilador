@@ -16,10 +16,10 @@ const dictionary = [
         patten: ["^([a-z]){1,20}$"],
         check: str => str != "if"
     },
-    {type: "scope_open", patten: ["^{$"]},
-    {type: "scope_close", patten: ["^}$"]},
-    {type: "bracket_open", patten: ["^[(]$"]},
-    {type: "bracket_close", patten: ["^[)]$"]},
+    {type: "scope-open", patten: ["^{$"]},
+    {type: "scope-close", patten: ["^}$"]},
+    {type: "bracket-open", patten: ["^[(]$"]},
+    {type: "bracket-close", patten: ["^[)]$"]},
 ];
 
 
