@@ -16,7 +16,7 @@ const dictionary = [
     {type: "bracket_open", patten: ["^[(]$"]},
     {type: "bracket_close", patten: ["^[)]$"]},
 ];
-readFile()
+readFile('./code-font.ifal')
 .then(teste => {
     const tokens = lexico(teste, dictionary);
     console.log(tokens);

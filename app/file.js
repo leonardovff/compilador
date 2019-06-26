@@ -1,6 +1,6 @@
 const fs = require('fs'),
-readFile = () => new Promise( resolve => {
-    fs.readFile('./code-font.ts', function read(err, data) {
+readFile = path  => new Promise( resolve => {
+    fs.readFile(path, function read(err, data) {
         if (err) {
             throw err;
         }
