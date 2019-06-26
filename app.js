@@ -25,6 +25,6 @@ const dictionary = [
 
 readFile('./code-font.ifal')
 .then(code => {
-    const {tokens, hash_ids} = {...lexico(code, dictionary)};
-    syntactic(tokens, hash_ids);
+    const {tokens, hash} = {...lexico(code, dictionary)};
+    syntactic(tokens, hash);
 });
