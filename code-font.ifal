@@ -1,4 +1,5 @@
-teste = 1
-if(teste == 2){
-    teste = 3
+teste = 3
+teste = teste + 3
+if(teste == 6){
+    teste = teste + 2
 }

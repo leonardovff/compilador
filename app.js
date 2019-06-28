@@ -11,6 +11,7 @@ const dictionary = [
     },
     {type: "operator-compare", patten: ["^(==){1,1}$"]},
     {type: "operator-if", patten: ["^if$"]},
+    {type: "boolean", patten: ["^(true|false)$"]},
     {
         type: "variable", 
         patten: ["^([a-z]){1,20}$"],

@@ -5,58 +5,104 @@ const Node = function(value, esq, dir) {
 }
 const syntactic = (tokens, hash) => {
     let constructs = [
-        {construct: "<variable><math-operator><int>",  type: "expression", resolve: (variable, operator, int) => {
-            let temp = null;
-            switch(operator){
+        {construct: "<int><math-operator><int>",  type: "expression", resolve: (variable1, operator, variable2) => {
+            let temp = variable1.token * 1;
+            switch(operator.token){
                 case "+":
-                    temp = int;
+                    temp += variable2.token * 1;
                     break;
                 case "-":
-                    temp = -int;
+                    temp -= variable2.token * 1;
                     break;
             }
-            return hash[variable] += temp;
+            return { token: temp, type: 'int'};
         }},
-        {construct: "<variable><operator-attribution><int>", type: "attribution", resolve: (variable, operator, int) => {
-            hash[variable.token] = int;
-        }},
-        {construct: "<variable><operator-compare><int>", type: "compare", resolve: () => {
+        {construct: "<variable><math-operator><int>",  type: "variable_expression", resolve: (variable, operator, int) => {
+            let temp = hash[variable.token].token * 1;
 
-        }},
-        {construct: "<bracket-open><compare><bracket-close>", type: "isolation", resolve: () => {
+            switch(operator.token){
+                case "+":
+                    temp += int.token * 1;
+                    break;
+                case "-":
+                    temp -= int.token * 1;
+                    break;
+            }
 
+            return { token: temp, type: 'int'};
         }},
-        {construct: "<operator-if><isolation><scope-open>", type: "cond", resolve: () => {
-
-        }}
+        {
+            construct: "<variable><operator-attribution><int>", 
+            type: "attribution", 
+            resolve: (variable, operator, int) => {
+                hash[variable.token] = int;
+                return "";
+            }
+        },
+        {
+            construct: "<variable><operator-compare><int>", 
+            type: "compare", 
+            resolve: (variable, operator, int) => {
+                
+                const temp = hash[variable.token].token == int.token;
+                return { token: temp, type: 'boolean'};
+            }
+        },
+        {
+            construct: "<bracket-open><boolean><bracket-close>", 
+            type: "isolation", 
+            resolve: (variable, operator, int) => {
+                return { token: operator, type: 'isolation'};
+            }
+        },
+        {
+            construct: "<operator-if><isolation><scope-open>", 
+            type: "cond",
+            resolve: (variable, operator, int, tokens, pos) => {
+                const close = tokens
+                    .map((token, i)=> {
+                        token['index'] = i; 
+                        return token;
+                    })
+                    .filter((token,i) => 
+                        i>pos && token.type=="scope-close"
+                    );
+                if(close.length == 1){
+                    if(operator.token.token){       
+                        tokens.splice(close[0].index,1);
+                    } else {
+                        tokens.splice(pos, close[0].index - pos + 1);
+                    }
+                } else {
+                    // message error here
+                }
+                return '';
+            }
+        }
     ]
     let pos = 0,
     str = "";
-    let tree = [];
-
     console.log(tokens);
     while(pos < tokens.length){
         str += `<${tokens[pos].type}>`;
-        console.log(str);
         let filtered = constructs.filter(construct => {
             return str.includes(construct.construct);
         });
-
-        console.log(filtered);
         if(filtered.length == 1){
-            const no = new Node( filtered[0].type, tokens[pos-2], tokens[pos]);
-            tree.push(no);
-            console.log(no)
-            filtered[0].resolve(no.esq, no.value, no.dir);
-            console.log(hash);
-            tokens[pos] = {type: filtered[0].type};
-            tokens.splice(pos-2,2);
-            console.log(tokens);
+            const no = new Node( tokens[pos-1], tokens[pos-2], tokens[pos]);
+            const retorno =  filtered[0].resolve(no.esq, no.value, no.dir, tokens, pos);
+            if(retorno){
+                tokens[pos] = retorno;
+                tokens.splice(pos-2,2);
+            } else {
+                tokens.splice(pos-2,3);
+            }
             str = "";
             pos = 0;
+            continue;
         }   
         pos++;
     }
-    console.log(tree);
+    console.log(hash);
 }
 module.exports = syntactic;
