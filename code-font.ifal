@@ -7,7 +7,7 @@ if(teste == 6){
 }
 print(9+1)
 
-if(teste == 8){
+if(false){
     teste = 2
 }
 print(teste)

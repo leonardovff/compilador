@@ -16,7 +16,7 @@ const dictionary = [
     {
         type: "variable", 
         patten: ["^([a-z]){1,20}$"],
-        check: str => str != "if" && str != "print"
+        check: str => ['if', 'false', 'true', 'print'].indexOf(str) == -1
     },
     {type: "scope-open", patten: ["^{$"]},
     {type: "scope-close", patten: ["^}$"]},

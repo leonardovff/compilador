@@ -52,6 +52,9 @@ const syntactic = (tokens, hash) => {
             construct: "<bracket-open><boolean><bracket-close>", 
             type: "isolation", 
             resolve: (variable, operator, int) => {
+                if(typeof operator.token == "string"){
+                    operator.token = operator.token == "true";
+                }
                 return { token: operator, type: 'isolation'};
             }
         },
@@ -81,7 +84,7 @@ const syntactic = (tokens, hash) => {
                     .filter((token,i) => 
                         i>pos && token.type=="scope-close"
                     );
-                if(close.length == 1){
+                if(close.length>0){
                     if(operator.token.token){       
                         tokens.splice(close[0].index,1);
                     } else {
@@ -116,7 +119,6 @@ const syntactic = (tokens, hash) => {
         let filtered = constructs.filter(construct => {
             return str.includes(construct.construct);
         });
-
         if(filtered.length == 1){
             let no = null,
             twoOpts = false;
@@ -136,7 +138,6 @@ const syntactic = (tokens, hash) => {
             } else {
                 tokens.splice(pos-dif,dif+1);
             }
-            //console.log(tokens);
             str = "";
             pos = 0;
             continue;
