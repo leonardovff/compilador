@@ -48,6 +48,15 @@ const syntactic = (tokens, hash) => {
                 return { token: temp, type: 'boolean'};
             }
         },
+
+        {
+            construct: "<int><operator-compare><int>", 
+            type: "compare", 
+            resolve: (int1, operator, int2) => {
+                const temp = int1.token == int2.token;
+                return { token: temp, type: 'boolean'};
+            }
+        },
         {
             construct: "<bracket-open><boolean><bracket-close>", 
             type: "isolation", 
