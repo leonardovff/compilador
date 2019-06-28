@@ -56,10 +56,24 @@ const syntactic = (tokens, hash) => {
             }
         },
         {
+            construct: "<bracket-open><variable><bracket-close>", 
+            type: "isolation", 
+            resolve: (variable, operator, int) => {
+                return { token: operator, type: 'isolation'};
+            }
+        },
+        {
+            construct: "<bracket-open><int><bracket-close>", 
+            type: "isolation", 
+            resolve: (variable, operator, int) => {
+                return { token: operator, type: 'isolation'};
+            }
+        },
+        {
             construct: "<operator-if><isolation><scope-open>", 
             type: "cond",
             resolve: (variable, operator, int, tokens, pos) => {
-                const close = tokens
+                const close = [...tokens]
                     .map((token, i)=> {
                         token['index'] = i; 
                         return token;
@@ -71,10 +85,25 @@ const syntactic = (tokens, hash) => {
                     if(operator.token.token){       
                         tokens.splice(close[0].index,1);
                     } else {
-                        tokens.splice(pos, close[0].index - pos + 1);
+                        tokens.splice(pos+1, close[0].index - pos)
                     }
                 } else {
                     // message error here
+                }
+                return '';
+            }
+        },
+        {
+            construct: "<print><isolation>", 
+            type: "print-operation",
+            resolve: (value) => {
+                switch(value.token.type){
+                    case 'variable':
+                        console.log(hash[value.token.token].token)
+                        break;
+                    case 'int':
+                        console.log(value.token.token)
+                        break;
                 }
                 return '';
             }
@@ -82,27 +111,37 @@ const syntactic = (tokens, hash) => {
     ]
     let pos = 0,
     str = "";
-    console.log(tokens);
     while(pos < tokens.length){
         str += `<${tokens[pos].type}>`;
         let filtered = constructs.filter(construct => {
             return str.includes(construct.construct);
         });
+
         if(filtered.length == 1){
-            const no = new Node( tokens[pos-1], tokens[pos-2], tokens[pos]);
-            const retorno =  filtered[0].resolve(no.esq, no.value, no.dir, tokens, pos);
+            let no = null,
+            twoOpts = false;
+            if(filtered[0].type == "print-operation"){
+                twoOpts = true;
+            }
+            if(twoOpts){
+                no = new Node( tokens[pos-1], tokens[pos]);       
+            } else {
+                no = new Node( tokens[pos-1], tokens[pos-2], tokens[pos]);
+            }
+            const retorno =  filtered[0].resolve(no.esq, no.value, no.dir, tokens, pos),
+            dif = twoOpts ? 1 : 2;
             if(retorno){
                 tokens[pos] = retorno;
-                tokens.splice(pos-2,2);
+                tokens.splice(pos-dif,dif);
             } else {
-                tokens.splice(pos-2,3);
+                tokens.splice(pos-dif,dif+1);
             }
+            //console.log(tokens);
             str = "";
             pos = 0;
             continue;
         }   
         pos++;
     }
-    console.log(hash);
 }
 module.exports = syntactic;

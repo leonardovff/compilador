@@ -1,5 +1,8 @@
 teste = 3
 teste = teste + 3
+
 if(teste == 6){
     teste = teste + 2
+    print(teste)
 }
+print(9+1)

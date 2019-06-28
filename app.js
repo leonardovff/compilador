@@ -3,6 +3,7 @@ const lexico = require('./app/lexico.js');
 const syntactic = require('./app/syntactic.js');
 const dictionary = [
     {type: "int", patten: ["^([0-9]){1,20}$"]},
+    {type: "print", patten: ["^print$"]},
     {type: "math-operator", patten: ["^([+-]){1,1}$"]},
     {
         type: "operator-attribution", 
@@ -15,12 +16,12 @@ const dictionary = [
     {
         type: "variable", 
         patten: ["^([a-z]){1,20}$"],
-        check: str => str != "if"
+        check: str => str != "if" && str != "print"
     },
     {type: "scope-open", patten: ["^{$"]},
     {type: "scope-close", patten: ["^}$"]},
     {type: "bracket-open", patten: ["^[(]$"]},
-    {type: "bracket-close", patten: ["^[)]$"]},
+    {type: "bracket-close", patten: ["^[)]$"]}
 ];
 
 
