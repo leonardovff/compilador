@@ -6,3 +6,8 @@ if(teste == 6){
     print(teste)
 }
 print(9+1)
+
+if(teste == 8){
+    teste = 2
+}
+print(teste)
